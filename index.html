@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Books Page</title>
+  </head>
+  <style>
+    body {
+      color: #54bab9;
+      background-color: #f7ecde;
+    }
+    .form_styling {
+      width: 550px;
+      border: 1px solid black;
+      margin: auto;
+      padding: 15px;
+    }
+    .main_card {
+      border: 1px solid black;
+      padding: 1rem;
+      margin: 1rem;
+    }
+  </style>
+  <body>
+    <h1 style="text-align: center">Books Information Website</h1>
+    <form id="form" class="form_styling">
+      <input id="name" type="text" placeholder="Enter Book Name" />
+      <input id="author" type="text" placeholder="Enter Author Name" />
+      <input id="comment" type="text" placeholder="Add Comments if any" />
+      <input type="submit" id="submit" />
+    </form>
+    <div id="container"></div>
+    <script>
+      window.addEventListener("load", () => {
+        let form = document.getElementById("submit");
+        form.addEventListener("click", handleSubmit);
+        getData();
+      });
+      let handleSubmit = (e) => {
+        e.preventDefault();
+        let name = document.getElementById("name").value;
+        let author = document.getElementById("author").value;
+        let comment = document.getElementById("comment").value;
+        let obj = { name, author, comment };
+        postData(obj);
+      };
+      let postData = (data) => {
+        fetch("http://localhost:3000/books", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => res.json())
+          .then((res) => getData())
+          .catch((err) => console.log(err));
+      };
+      let getData = () => {
+        fetch("http://localhost:3000/books")
+          .then((res) => res.json())
+          .then((res) => showData(res))
+          .catch((err) => console.log(err));
+      };
+      let showData = (data) => {
+        let container = document.getElementById("container");
+        container.innerHTML = "";
+        for (let item of data) {
+          let response = cardDetails(item);
+          container.append(response);
+        }
+      };
+      let cardDetails = (card) => {
+        let mainCard = document.createElement("div");
+        mainCard.className = "main_card";
+
+        let name = document.createElement("h2");
+        name.innerHTML = `Name of the Book - ${card.name}`;
+
+        let author = document.createElement("h4");
+        author.innerHTML = `Author Name - ${card.author}`;
+
+        let comment = document.createElement("p");
+        comment.innerHTML = `Comments: ${card.comment}`;
+
+        let input = document.createElement("input");
+        input.id = `comment${card.id}`;
+
+        let btn = document.createElement("button");
+        btn.innerHTML = "Edit comments";
+        btn.addEventListener("click", () => {
+          let res = document.getElementById(`comment${card.id}`).value;
+          console.log(res);
+
+          fetch(`http://localhost:3000/books?q=${card.comment}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(res),
+          })
+            .then((res) => res.json())
+            .then((res) => getData())
+            .catch((er) => console.log(er));
+        });
+        mainCard.append(name, author, comment, input, btn);
+        return mainCard;
+      };
+    </script>
+  </body>
+</html>

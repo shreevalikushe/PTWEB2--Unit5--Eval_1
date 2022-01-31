@@ -1,0 +1,22 @@
+{
+  "books": [
+    {
+      "name": "Harry Potter",
+      "author": "JK Rowling",
+      "comment": "nice book",
+      "id": 1
+    },
+    {
+      "name": "Lord of the rings",
+      "author": "JRR Tolkien",
+      "comment": "Good Book",
+      "id": 2
+    },
+    {
+      "name": "Psychology of dreams",
+      "author": "Sigmund Freud",
+      "comment": "Must read",
+      "id": 3
+    }
+  ]
+}
