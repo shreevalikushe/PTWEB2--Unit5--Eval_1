@@ -92,14 +92,15 @@
         btn.innerHTML = "Edit comments";
         btn.addEventListener("click", () => {
           let res = document.getElementById(`comment${card.id}`).value;
+          let data = { comment: res };
           console.log(res);
 
-          fetch(`http://localhost:3000/books?q=${card.comment}`, {
+          fetch(`http://localhost:3000/books/${card.id}`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(res),
+            body: JSON.stringify(data),
           })
             .then((res) => res.json())
             .then((res) => getData())
